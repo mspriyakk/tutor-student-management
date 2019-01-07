@@ -71,11 +71,24 @@ var TutorsList = function (_React$Component) {
 				var tutorName = arryTutors[k];
 				var photo = tutor[tutorName].photo;
 				var count = tutor[tutorName].count;
+				var board = "";
+
+				for (var s in skills) {
+					console.log(s, skills[s], skills[s].toString().includes(tutorName));
+					if (skills[s].toString().includes(tutorName)) {
+						board += s + ",";
+					}
+				}
+
 				tutors.push(React.createElement(
 					'article',
 					{ key: tutorName },
 					React.createElement('img', { src: photo, alt: tutorName, className: 'float-left' }),
-					React.createElement('aside', { className: 'tutor-board' })
+					React.createElement(
+						'aside',
+						{ className: 'tutor-board' },
+						board
+					)
 				));
 			}
 

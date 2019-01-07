@@ -56,10 +56,18 @@ class TutorsList extends React.Component {
 			let tutorName = arryTutors[k];
 			let photo = tutor[tutorName].photo;
 			let count = tutor[tutorName].count;
+			let board="";
+
+			for(let s in skills){
+				console.log(s,skills[s],skills[s].toString().includes(tutorName))
+				if(skills[s].toString().includes(tutorName)){
+					board += s +",";
+				}
+			}
+
 			tutors.push(<article key={tutorName}>
 				<img src={photo} alt={tutorName} className="float-left" />
-
-				<aside className="tutor-board"></aside>
+				<aside className="tutor-board">{board}</aside>
 			</article>);
 		}
 
