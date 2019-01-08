@@ -1,3 +1,5 @@
+'use strict';
+
 function loadScheduleJSON(callback)  {
 	var xobj = new XMLHttpRequest();
 	xobj.open("GET", "data/schedule.json", true);
@@ -29,9 +31,11 @@ function loadTutorJSON(callback)  {
 		}
 	};
 	xobj.send(null);
-}
+}	
+
+let scheduleData, skillsData, tutorData;
+
 (function init() {
-	let scheduleData, skillsData, tutorData;
 
  loadScheduleJSON((response)=> {
  	scheduleData = JSON.parse(response);
@@ -39,12 +43,12 @@ function loadTutorJSON(callback)  {
  });
 
   loadSkillsJSON((response)=> {
- 	var skillsData = JSON.parse(response);
+ 	skillsData = JSON.parse(response);
  	console.log(skillsData);
  });
 
   loadTutorJSON((response)=> {
- 	var tutorData = JSON.parse(response);
+ 	tutorData = JSON.parse(response);
  	console.log(tutorData);
  });
 
