@@ -14,6 +14,31 @@ var e2 = React.createElement;
 var curDay = 1;
 var curHour = new Date().getHours();
 
+function SkillBoard(props) {
+	var tutorName = props.name;
+	var skills = JSONdata.skillsData;
+	console.log(skills);
+
+	var skillBoard = [];
+
+	for (var s in skills) {
+		console.log(s, skills[s], skills[s].toString().includes(tutorName));
+		if (skills[s].toString().includes(tutorName)) {
+			skillBoard.push(React.createElement(
+				'p',
+				null,
+				s
+			));
+		}
+	}
+
+	return React.createElement(
+		'aside',
+		{ className: 'skill-board' },
+		skillBoard
+	);
+}
+
 var TutorsList = function (_React$Component) {
 	_inherits(TutorsList, _React$Component);
 
@@ -28,10 +53,9 @@ var TutorsList = function (_React$Component) {
 		key: 'render',
 		value: function render() {
 			var schedule = JSONdata.scheduleData;
-			var skills = JSONdata.skillsData;
 			var tutor = JSONdata.tutorData;
 
-			console.log(skills, tutor);
+			console.log(tutor);
 			var curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 			console.log(schedule[curDayName[curDay]]);
@@ -71,24 +95,12 @@ var TutorsList = function (_React$Component) {
 				var tutorName = arryTutors[k];
 				var photo = tutor[tutorName].photo;
 				var count = tutor[tutorName].count;
-				var board = "";
-
-				for (var s in skills) {
-					console.log(s, skills[s], skills[s].toString().includes(tutorName));
-					if (skills[s].toString().includes(tutorName)) {
-						board += s + ",";
-					}
-				}
 
 				tutors.push(React.createElement(
 					'article',
 					{ key: tutorName },
 					React.createElement('img', { src: photo, alt: tutorName, className: 'float-left' }),
-					React.createElement(
-						'aside',
-						{ className: 'tutor-board' },
-						board
-					)
+					React.createElement(SkillBoard, { name: tutorName })
 				));
 			}
 

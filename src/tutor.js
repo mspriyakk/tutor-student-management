@@ -5,6 +5,29 @@ const e2 = React.createElement;
 const curDay = 1; 
 const curHour = new Date().getHours();
 
+
+function SkillBoard(props) {
+	let tutorName = props.name;
+	let skills = JSONdata.skillsData;
+	console.log(skills);
+
+	const skillBoard =[];
+
+	for(let s in skills){
+		console.log(s,skills[s],skills[s].toString().includes(tutorName))
+		if(skills[s].toString().includes(tutorName)){
+			skillBoard.push(<p>{s}</p>);			
+		}
+	}
+
+	return (
+		<aside className="skill-board">
+		{skillBoard}
+		</aside>
+	);
+
+}
+
 class TutorsList extends React.Component {
 
 	constructor(props){
@@ -13,10 +36,9 @@ class TutorsList extends React.Component {
 	}
 	render(){
 		let schedule = JSONdata.scheduleData;
-		let skills = JSONdata.skillsData;
 		let tutor = JSONdata.tutorData;	
 
-		console.log(skills, tutor);
+		console.log(tutor);
 		const curDayName = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 		console.log(schedule[curDayName[curDay]]);
@@ -56,18 +78,10 @@ class TutorsList extends React.Component {
 			let tutorName = arryTutors[k];
 			let photo = tutor[tutorName].photo;
 			let count = tutor[tutorName].count;
-			let board="";
-
-			for(let s in skills){
-				console.log(s,skills[s],skills[s].toString().includes(tutorName))
-				if(skills[s].toString().includes(tutorName)){
-					board += s +",";
-				}
-			}
 
 			tutors.push(<article key={tutorName}>
 				<img src={photo} alt={tutorName} className="float-left" />
-				<aside className="tutor-board">{board}</aside>
+				<SkillBoard name={tutorName} />
 			</article>);
 		}
 
