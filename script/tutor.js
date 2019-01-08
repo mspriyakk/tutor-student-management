@@ -26,7 +26,7 @@ function SkillBoard(props) {
 		if (skills[s].toString().includes(tutorName)) {
 			skillBoard.push(React.createElement(
 				'p',
-				null,
+				{ key: s },
 				s
 			));
 		}

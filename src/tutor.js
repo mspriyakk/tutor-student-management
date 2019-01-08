@@ -16,7 +16,7 @@ function SkillBoard(props) {
 	for(let s in skills){
 		console.log(s,skills[s],skills[s].toString().includes(tutorName))
 		if(skills[s].toString().includes(tutorName)){
-			skillBoard.push(<p>{s}</p>);			
+			skillBoard.push(<p key={s}>{s}</p>);			
 		}
 	}
 
