@@ -5,16 +5,14 @@ const e = React.createElement;
 const curDay = 1; 
 const curHour = new Date().getHours();
 let skills = JSONdata.skillsData;
+let tutor = JSONdata.tutorData;	
 
 
 function SkillBoard(props) {
 	let tutorName = props.name;
-	//console.log(skills);
-
 	const skillBoard =[];
 
 	for(let s in skills){
-		//console.log(s,skills[s],skills[s].toString().includes(tutorName))
 		if(skills[s].toString().includes(tutorName)){
 			skillBoard.push(<p key={s}>{s}</p>);			
 		}
@@ -25,19 +23,17 @@ function SkillBoard(props) {
 		{skillBoard}
 		</aside>
 	);
-
 }
 
 class TutorsList extends React.Component {
 	render(){
 		let schedule = JSONdata.scheduleData;
-		let tutor = JSONdata.tutorData;	
-		let currentCourse = this.props.value;
+		let currentCourse = this.props.activeCourse;
+		let counter = this.props.tutorServingCounter;
 
 		console.log(tutor, skills[currentCourse]);
 		const curDayName = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-		//console.log(schedule[curDayName[curDay]]);
 
 		let scheduleTime = Object.keys(schedule[curDayName[curDay]]);
 		let scheduleTimeHashMap=new Object();
@@ -46,12 +42,10 @@ class TutorsList extends React.Component {
 			scheduleTimeHashMap[scheduleTime[j]] = scheduleTime[j];
 		}
 
-		//console.log(scheduleTimeHashMap);
 
 		var flag;
 		if(curHour < 13){
 			for(let item in scheduleTimeHashMap) { 
-				//console.log(item.substr(0,1));
 				if(item.substr(0,2) === curHour) {
 				  flag =  item;
 				 break;
@@ -66,7 +60,6 @@ class TutorsList extends React.Component {
 			}
 		}
 
-		//console.log(flag, schedule[curDayName[curDay]][flag]);
 		let arryTutors = schedule[curDayName[curDay]][flag];
 		let arryTutorBySkill =[];
 
@@ -81,11 +74,19 @@ class TutorsList extends React.Component {
 		for(let k=0; k<arryTutorBySkill.length;k++){
 			let tutorName = arryTutorBySkill[k];
 			let photo = tutor[tutorName].photo;
-			let count = tutor[tutorName].count;
 
 			tutors.push(<article key={tutorName}>
 				<img src={photo} alt={tutorName} className="float-left" />
 				<SkillBoard name={tutorName} />
+
+			<form>
+				<input type="text" 
+				value={counter[tutorName][currentCourse]} 
+				onChange={(tutorName, currentCourse)=>this.props.onChange(tutorName, currentCourse)} />
+				<button onClick={(tutorName, currentCourse)=>this.props.onPlusClick(tutorName, currentCourse)}>+</button>
+				<button onClick={(tutorName, currentCourse)=>this.props.onMinusClick(tutorName, currentCourse)}>-</button>
+			</form>			
+			
 			</article>);
 		}
 
@@ -93,7 +94,7 @@ class TutorsList extends React.Component {
 				<section id="tutor-listing" className="flexbox">
 					{tutors}
 				</section>
-			)
+			);
 	}
 }
 
@@ -116,14 +117,47 @@ class Courses extends React.Component {
 class Page extends React.Component {
 	constructor(props){
 		super(props);
-		this.state = {activeLink: "ALL COURSES"};
+
+		let newObj = {};
+		let skillsArry = Object.keys(skills);
+		let tutorArry = Object.keys(tutor);
+
+		for(let j=0;j<tutorArry.length;j++){
+			newObj[tutorArry[j]] = {};
+			for(let i=0;i<skillsArry.length; i++){ 
+				newObj[tutorArry[j]][skillsArry[i]] = 0;
+			}
+		}
+
+		this.state = {
+			tutorStudentCounter: newObj,
+			activeLink: "ALL COURSES"
+		};
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleAdd = this.handleAdd.bind(this);
+		this.handleMinus = this.handleMinus.bind(this);
 	}
 
 	handleClick(i){
 		let currentClicked = i.name;
-		this.setState({activeLink : currentClicked});
-		//console.log("this link was clicked.");
+		this.setState({
+			activeLink : currentClicked
+		});
+		
 	}
+	handleChange =  (param1, param2) => (evt) => {
+		console.log(param1, param2);
+		// this.setState({value: event.target.value});
+	}
+	handleAdd =  (param1, param2) => (evt) => {
+		console.log(param1, param2);
+		// this.setState({value: event.target.value});
+	}
+	handleMinus =  (param1, param2) => (evt) => {
+		console.log(param1, param2);
+		// this.setState({value: event.target.value});
+	}	
 
 	render(i){	
 		return (
@@ -142,7 +176,10 @@ class Page extends React.Component {
 					</header>
 					<h3 id="course-info"></h3>
 
-					<TutorsList value={this.state.activeLink} />
+					<TutorsList activeCourse={this.state.activeLink}  tutorServingCounter={this.state.tutorStudentCounter} 
+						onChange={(t,s) => this.handleChange(t,s)} 
+						onPlusClick={(t,s) => this.handleAdd(t,s)} 
+						onMinusClick={(t,s) => this.handleMinus(t,s)} />
 
 				</main>
 			</div>

@@ -14,15 +14,13 @@ var e = React.createElement;
 var curDay = 1;
 var curHour = new Date().getHours();
 var skills = JSONdata.skillsData;
+var tutor = JSONdata.tutorData;
 
 function SkillBoard(props) {
 	var tutorName = props.name;
-	//console.log(skills);
-
 	var skillBoard = [];
 
 	for (var s in skills) {
-		//console.log(s,skills[s],skills[s].toString().includes(tutorName))
 		if (skills[s].toString().includes(tutorName)) {
 			skillBoard.push(React.createElement(
 				'p',
@@ -51,14 +49,14 @@ var TutorsList = function (_React$Component) {
 	_createClass(TutorsList, [{
 		key: 'render',
 		value: function render() {
+			var _this2 = this;
+
 			var schedule = JSONdata.scheduleData;
-			var tutor = JSONdata.tutorData;
-			var currentCourse = this.props.value;
+			var currentCourse = this.props.activeCourse;
+			var counter = this.props.tutorServingCounter;
 
 			console.log(tutor, skills[currentCourse]);
 			var curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-			//console.log(schedule[curDayName[curDay]]);
 
 			var scheduleTime = Object.keys(schedule[curDayName[curDay]]);
 			var scheduleTimeHashMap = new Object();
@@ -67,12 +65,9 @@ var TutorsList = function (_React$Component) {
 				scheduleTimeHashMap[scheduleTime[j]] = scheduleTime[j];
 			}
 
-			//console.log(scheduleTimeHashMap);
-
 			var flag;
 			if (curHour < 13) {
 				for (var item in scheduleTimeHashMap) {
-					//console.log(item.substr(0,1));
 					if (item.substr(0, 2) === curHour) {
 						flag = item;
 						break;
@@ -87,7 +82,6 @@ var TutorsList = function (_React$Component) {
 				}
 			}
 
-			//console.log(flag, schedule[curDayName[curDay]][flag]);
 			var arryTutors = schedule[curDayName[curDay]][flag];
 			var arryTutorBySkill = [];
 
@@ -101,13 +95,35 @@ var TutorsList = function (_React$Component) {
 			for (var _k = 0; _k < arryTutorBySkill.length; _k++) {
 				var tutorName = arryTutorBySkill[_k];
 				var photo = tutor[tutorName].photo;
-				var count = tutor[tutorName].count;
 
 				tutors.push(React.createElement(
 					'article',
 					{ key: tutorName },
 					React.createElement('img', { src: photo, alt: tutorName, className: 'float-left' }),
-					React.createElement(SkillBoard, { name: tutorName })
+					React.createElement(SkillBoard, { name: tutorName }),
+					React.createElement(
+						'form',
+						null,
+						React.createElement('input', { type: 'text',
+							value: counter[tutorName][currentCourse],
+							onChange: function onChange(tutorName, currentCourse) {
+								return _this2.props.onChange(tutorName, currentCourse);
+							} }),
+						React.createElement(
+							'button',
+							{ onClick: function onClick(tutorName, currentCourse) {
+									return _this2.props.onPlusClick(tutorName, currentCourse);
+								} },
+							'+'
+						),
+						React.createElement(
+							'button',
+							{ onClick: function onClick(tutorName, currentCourse) {
+									return _this2.props.onMinusClick(tutorName, currentCourse);
+								} },
+							'-'
+						)
+					)
 				));
 			}
 
@@ -134,7 +150,7 @@ var Courses = function (_React$Component2) {
 	_createClass(Courses, [{
 		key: 'render',
 		value: function render() {
-			var _this3 = this;
+			var _this4 = this;
 
 			var courseNames = Object.keys(skills);
 			var courses = courseNames.map(function (name) {
@@ -144,7 +160,7 @@ var Courses = function (_React$Component2) {
 					React.createElement(
 						'a',
 						{ name: name, onClick: function onClick() {
-								return _this3.props.onClick({ name: name });
+								return _this4.props.onClick({ name: name });
 							} },
 						name
 					)
@@ -168,23 +184,63 @@ var Page = function (_React$Component3) {
 	function Page(props) {
 		_classCallCheck(this, Page);
 
-		var _this4 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
+		var _this5 = _possibleConstructorReturn(this, (Page.__proto__ || Object.getPrototypeOf(Page)).call(this, props));
 
-		_this4.state = { activeLink: "ALL COURSES" };
-		return _this4;
+		_this5.handleChange = function (param1, param2) {
+			return function (evt) {
+				console.log(param1, param2);
+				// this.setState({value: event.target.value});
+			};
+		};
+
+		_this5.handleAdd = function (param1, param2) {
+			return function (evt) {
+				console.log(param1, param2);
+				// this.setState({value: event.target.value});
+			};
+		};
+
+		_this5.handleMinus = function (param1, param2) {
+			return function (evt) {
+				console.log(param1, param2);
+				// this.setState({value: event.target.value});
+			};
+		};
+
+		var newObj = {};
+		var skillsArry = Object.keys(skills);
+		var tutorArry = Object.keys(tutor);
+
+		for (var j = 0; j < tutorArry.length; j++) {
+			newObj[tutorArry[j]] = {};
+			for (var i = 0; i < skillsArry.length; i++) {
+				newObj[tutorArry[j]][skillsArry[i]] = 0;
+			}
+		}
+
+		_this5.state = {
+			tutorStudentCounter: newObj,
+			activeLink: "ALL COURSES"
+		};
+
+		_this5.handleChange = _this5.handleChange.bind(_this5);
+		_this5.handleAdd = _this5.handleAdd.bind(_this5);
+		_this5.handleMinus = _this5.handleMinus.bind(_this5);
+		return _this5;
 	}
 
 	_createClass(Page, [{
 		key: 'handleClick',
 		value: function handleClick(i) {
 			var currentClicked = i.name;
-			this.setState({ activeLink: currentClicked });
-			//console.log("this link was clicked.");
+			this.setState({
+				activeLink: currentClicked
+			});
 		}
 	}, {
 		key: 'render',
 		value: function render(i) {
-			var _this5 = this;
+			var _this6 = this;
 
 			return React.createElement(
 				'div',
@@ -201,7 +257,7 @@ var Page = function (_React$Component3) {
 						'nav',
 						{ id: 'course-group' },
 						React.createElement(Courses, { value: this.state.activeLink, onClick: function onClick(i) {
-								return _this5.handleClick(i);
+								return _this6.handleClick(i);
 							} })
 					),
 					React.createElement(
@@ -220,7 +276,16 @@ var Page = function (_React$Component3) {
 						React.createElement('p', { id: 'time-of-the-week', className: 'subhead' })
 					),
 					React.createElement('h3', { id: 'course-info' }),
-					React.createElement(TutorsList, { value: this.state.activeLink })
+					React.createElement(TutorsList, { activeCourse: this.state.activeLink, tutorServingCounter: this.state.tutorStudentCounter,
+						onChange: function onChange(t, s) {
+							return _this6.handleChange(t, s);
+						},
+						onPlusClick: function onPlusClick(t, s) {
+							return _this6.handleAdd(t, s);
+						},
+						onMinusClick: function onMinusClick(t, s) {
+							return _this6.handleMinus(t, s);
+						} })
 				)
 			);
 		}
