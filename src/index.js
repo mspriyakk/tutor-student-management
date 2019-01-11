@@ -182,9 +182,9 @@ class Page extends React.Component {
 					<h3 id="course-info"></h3>
 
 					<TutorsList activeCourse={this.state.activeLink}  tutorServingCounter={this.state.tutorStudentCounter} 
-						onChange={(t,s) => this.handleChange(t,s)} 
-						onPlusClick={(t,s) => this.handleAdd(t,s)} 
-						onMinusClick={(t,s) => this.handleMinus(t,s)} />
+						onChange={ () => this.handleChange} 
+						onPlusClick={() => this.handleAdd} 
+						onMinusClick={() => this.handleMinus} />
 
 				</main>
 			</div>
