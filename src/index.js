@@ -66,7 +66,7 @@ class TutorsList extends React.Component {
 	}
 	handleChange(tutor, evt)  {
 		evt.preventDefault();
-		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		//console.log(this.props.activeCourse,this.state.tutorStudentCounter);
 		const counter = this.state.tutorStudentCounter;
 		counter[tutor][this.props.activeCourse] = evt.target.value;
 
@@ -74,7 +74,7 @@ class TutorsList extends React.Component {
 	}
 	handleAdd(tutor, evt){
 		evt.preventDefault();
-		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		//console.log(this.props.activeCourse,this.state.tutorStudentCounter);
 		const counter = this.state.tutorStudentCounter;
 		counter[tutor][this.props.activeCourse] = counter[tutor][this.props.activeCourse]+1;
 
@@ -82,8 +82,9 @@ class TutorsList extends React.Component {
 	}
 	handleMinus(tutor, evt){
 		evt.preventDefault();
-		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		//console.log(this.props.activeCourse,this.state.tutorStudentCounter);
 		const counter = this.state.tutorStudentCounter;
+		if(counter[tutor][this.props.activeCourse] === 0) return;
 		counter[tutor][this.props.activeCourse] = counter[tutor][this.props.activeCourse]-1;
 
 		this.setState({tutorStudentCounter: counter});
@@ -92,7 +93,7 @@ class TutorsList extends React.Component {
 		let currentCourse = this.props.activeCourse;
 		let counter = this.state.tutorStudentCounter;
 
-		console.log(tutor, skills[currentCourse]);
+		//console.log(tutor, skills[currentCourse]);
 		const curDayName = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
