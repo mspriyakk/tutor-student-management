@@ -6,11 +6,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 //console.log(schedule, skills, tutor);
-const e = React.createElement;
 const curDay = 1; 
 const curHour = new Date().getHours();
 
-
+class Courses extends React.Component {
+	render(){
+		let courseNames = Object.keys(skills);
+		const courses = courseNames.map((name) =>
+			<li key={name}><a name={name} onClick={()=>this.props.onClick({name})}>{name}</a></li>
+		);	
+		
+		return (
+	  			<ul>			
+					{courses}
+				</ul>				
+			)
+	}
+}
 
 function SkillBoard(props) {
 	let tutorName = props.name;
@@ -30,11 +42,55 @@ function SkillBoard(props) {
 }
 
 class TutorsList extends React.Component {
+	constructor(props){
+		super(props);
+
+		let newObj = {};
+		let skillsArry = Object.keys(skills);
+		let tutorArry = Object.keys(tutor);
+
+		for(let j=0;j<tutorArry.length;j++){
+			newObj[tutorArry[j]] = {};
+			for(let i=0;i<skillsArry.length; i++){ 
+				newObj[tutorArry[j]][skillsArry[i]] = 0;
+			}
+		}
+
+		this.state = {
+			tutorStudentCounter: newObj,
+		};
+
+		this.handleChange = this.handleChange.bind(this);
+		this.handleAdd = this.handleAdd.bind(this);
+		this.handleMinus = this.handleMinus.bind(this);
+	}
+	handleChange(tutor, evt)  {
+		evt.preventDefault();
+		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		const counter = this.state.tutorStudentCounter;
+		counter[tutor][this.props.activeCourse] = evt.target.value;
+
+		this.setState({tutorStudentCounter: counter});
+	}
+	handleAdd(tutor, evt){
+		evt.preventDefault();
+		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		const counter = this.state.tutorStudentCounter;
+		counter[tutor][this.props.activeCourse] = counter[tutor][this.props.activeCourse]+1;
+
+		this.setState({tutorStudentCounter: counter});
+	}
+	handleMinus(tutor, evt){
+		evt.preventDefault();
+		console.log(this.props.activeCourse,this.state.tutorStudentCounter);
+		const counter = this.state.tutorStudentCounter;
+		counter[tutor][this.props.activeCourse] = counter[tutor][this.props.activeCourse]-1;
+
+		this.setState({tutorStudentCounter: counter});
+	}	
 	render(){
-
-
 		let currentCourse = this.props.activeCourse;
-		let counter = this.props.tutorServingCounter;
+		let counter = this.state.tutorStudentCounter;
 
 		console.log(tutor, skills[currentCourse]);
 		const curDayName = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -87,9 +143,9 @@ class TutorsList extends React.Component {
 			<form>
 				<input type="text" 
 				value={counter[tutorName][currentCourse]} 
-				onChange={(tutorName, currentCourse)=>this.props.onChange(tutorName, currentCourse)} />
-				<button onClick={(tutorName, currentCourse)=>this.props.onPlusClick(tutorName, currentCourse)}>+</button>
-				<button onClick={(tutorName, currentCourse)=>this.props.onMinusClick(tutorName, currentCourse)}>-</button>
+				onChange={(e)=>this.handleChange(tutorName,e)} />
+				<button onClick={(e)=>this.handleAdd(tutorName,e)}>+</button>
+				<button onClick={(e)=>this.handleMinus(tutorName,e)}>-</button>
 			</form>			
 			
 			</article>);
@@ -103,45 +159,13 @@ class TutorsList extends React.Component {
 	}
 }
 
-class Courses extends React.Component {
-	render(){
-		let courseNames = Object.keys(skills);
-		const courses = courseNames.map((name) =>
-			<li key={name}><a name={name} onClick={()=>this.props.onClick({name})}>{name}</a></li>
-		);	
-		
-		return (
-	  			<ul>			
-					{courses}
-				</ul>				
-			)
-	}
-}
-
 
 class Page extends React.Component {
 	constructor(props){
 		super(props);
-
-		let newObj = {};
-		let skillsArry = Object.keys(skills);
-		let tutorArry = Object.keys(tutor);
-
-		for(let j=0;j<tutorArry.length;j++){
-			newObj[tutorArry[j]] = {};
-			for(let i=0;i<skillsArry.length; i++){ 
-				newObj[tutorArry[j]][skillsArry[i]] = 0;
-			}
-		}
-
 		this.state = {
-			tutorStudentCounter: newObj,
 			activeLink: "ALL COURSES"
 		};
-
-		this.handleChange = this.handleChange.bind(this);
-		this.handleAdd = this.handleAdd.bind(this);
-		this.handleMinus = this.handleMinus.bind(this);
 	}
 
 	handleClick(i){
@@ -151,19 +175,7 @@ class Page extends React.Component {
 		});
 		
 	}
-	handleChange =  (param1, param2) => (evt) => {
-		console.log(param1, param2);
-		// this.setState({value: event.target.value});
-	}
-	handleAdd =  (param1, param2) => (evt) => {
-		console.log(param1, param2);
-		// this.setState({value: event.target.value});
-	}
-	handleMinus =  (param1, param2) => (evt) => {
-		console.log(param1, param2);
-		// this.setState({value: event.target.value});
-	}	
-
+	
 	render(i){	
 		return (
 			<div className="flexbox">
@@ -181,15 +193,11 @@ class Page extends React.Component {
 					</header>
 					<h3 id="course-info"></h3>
 
-					<TutorsList activeCourse={this.state.activeLink}  tutorServingCounter={this.state.tutorStudentCounter} 
-						onChange={ () => this.handleChange} 
-						onPlusClick={() => this.handleAdd} 
-						onMinusClick={() => this.handleMinus} />
-
+					<TutorsList activeCourse={this.state.activeLink}   />
 				</main>
 			</div>
 			);
 	}
 }
 const domContainer = document.getElementById('root');
-ReactDOM.render(e(Page), domContainer);
+ReactDOM.render(<Page />, domContainer);
