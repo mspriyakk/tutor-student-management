@@ -10,29 +10,24 @@ const curDay = 1;
 const curHour = new Date().getHours();
 const curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-class Courses extends React.Component {
-	render(){
-		let courseNames = Object.keys(skills);
+function Courses(props) {
+	let courseNames = Object.keys(skills);
 
-		const courses = courseNames.map((course) =>{
-			let courseCounter = 0;
-			for (let student in this.props.studentCounter) {
-				courseCounter += this.props.studentCounter[student][course];
-			}
-
-			return (<li key={course}><a name={course} onClick={() => this.props.onClick({ course })}>{course} ({courseCounter})</a></li>);
-
-
+	const courses = courseNames.map((course) =>{
+		let courseCounter = 0;
+		for (let student in props.studentCounter) {
+			courseCounter += props.studentCounter[student][course];
 		}
-		);	
 
-		
-		return (
-	  			<ul>			
-					{courses}
-				</ul>				
-			)
-	}
+		return (<li key={course}><a name={course} onClick={() => props.onClick({ course })}>{course} ({courseCounter})</a></li>);
+	});	
+
+	
+	return (
+			<ul>			
+				{courses}
+			</ul>				
+		);
 }
 
 function SkillBoard(props) {
