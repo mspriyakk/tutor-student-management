@@ -1,3 +1,4 @@
+import "./index.css"
 import schedule from "./schedule";
 import skills from "./skills";
 import tutor from "./tutor";
@@ -13,36 +14,41 @@ const today = new Date();
 const curDay = today.getDay(); 
 const curHour = today.getHours();
 const curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const curScheduleTime = getCurrentScheduleTime();
 
 
-function tutorsBySkill(currentCourse) {
-	//console.log(tutor, skills[currentCourse]);
-
+function getCurrentScheduleTime(){
 	let scheduleTime = Object.keys(schedule[curDayName[curDay]]);
 	let scheduleTimeHashMap = {};
 
 	for (let j = 0; j < scheduleTime.length; j++) {
-		scheduleTimeHashMap[scheduleTime[j]] = scheduleTime[j];
+	scheduleTimeHashMap[scheduleTime[j]] = scheduleTime[j];
 	}
 
 	var flag;
 	if (curHour < 13) {
 		for (let item in scheduleTimeHashMap) {
 			if (Number(item.substr(0, 2)) === curHour) {
-				flag = item;
-				break;
+			flag = item;
+			break;
 			}
 		}
 	} else {
 		for (let item in scheduleTimeHashMap) {
 			if (Number(item.substr(0, 1)) === curHour - 12) {
-				flag = item;
-				break;
+			flag = item;
+			break;
 			}
 		}
-	}
+	}	
+	return flag;
+}
 
-	let arryTutors = schedule[curDayName[curDay]][flag];
+function tutorsBySkill(currentCourse) {
+	//console.log(tutor, skills[currentCourse]);
+
+
+	let arryTutors = schedule[curDayName[curDay]][curScheduleTime];
 	let arryTutorBySkill = [];
 
 	if(arryTutors === undefined){
@@ -170,36 +176,30 @@ class Page extends React.Component {
 			}
 		}
 
-		return (
-			<div className="flexbox">
-				<aside>
-					<h2>Course</h2>
-			  		<nav id="course-group">
-						<Courses 
-						studentCounter = {this.state.studentCounter}
-						value = {this.state.activeLink}
-						onClick = {
-							(i) => this.handleClick(i)
-						}
-						/>
-			  		</nav> 
-			  		<p><img src="images/mcslc-logo.png" alt="MSCLC logo" /></p>
-				</aside>
-				<main>
-					<header className="flexbox">
-						<h2 id="day-of-the-week"></h2>
-						<p id="time-of-the-week" className="subhead"></p>
-					</header>
-					<h3 id="course-info"></h3>
+		return <div className="flexbox">
+        <aside>
+          <h2>Course</h2>
+          <nav id="course-group">
+            <Courses studentCounter={this.state.studentCounter} value={this.state.activeLink} onClick={i => this.handleClick(i)} />
+          </nav>
+          <p>
+            <img src="images/mcslc-logo.png" alt="MSCLC logo" />
+          </p>
+        </aside>
+        <main>
+          <header className="flexbox">
+			<h2 id="day-of-the-week">
+			{curDayName[curDay]} 
+			<span id="time-of-the-week" className="subhead"> ({curScheduleTime})</span>
+			</h2>
+          </header>
+			<h3 id="course-info">{this.state.activeLink}</h3>
 
-
-					<section id="tutor-listing" className="flexbox">
-						{tutorsSection}
-					</section>
-
-				</main>
-			</div>
-			);
+          <section id="tutor-listing" className="flexbox fwrap">
+            {tutorsSection}
+          </section>
+        </main>
+      </div>;
 	}
 }
 const domContainer = document.getElementById('root');
