@@ -130,17 +130,25 @@ class Page extends React.Component {
 				let tutorName = arryTutorBySkill[k];
 				let photo = tutor[tutorName].photo;
 
-				tutorsSection.push( <article key = {tutorName} >
-					<TutorsList name={tutorName} photo={photo} />
-					<SkillBoard name={tutorName} /> 
-					<form>
-						<input type="text"
-							value={counter[tutorName][currentCourse]}
-							onChange={(e) => this.handleChange(tutorName, e)} />
-						<button onClick={(e) => this.handleAdd(tutorName, e)}>+</button>
-						<button onClick={(e) => this.handleMinus(tutorName, e)}>-</button>
-					</form>
-				</article>);
+				if(currentCourse === "ALL COURSES"){
+					tutorsSection.push(<article key={tutorName}>
+						<TutorsList name={tutorName} photo={photo} />
+						<SkillBoard name={tutorName} />
+		            </article>);
+				}else{
+					tutorsSection.push(<article key={tutorName} >
+						<TutorsList name={tutorName} photo={photo} />
+						<SkillBoard name={tutorName} />
+						<form>
+							<input type="text"
+								value={counter[tutorName][currentCourse]}
+								onChange={(e) => this.handleChange(tutorName, e)} />
+							<button onClick={(e) => this.handleAdd(tutorName, e)}>+</button>
+							<button onClick={(e) => this.handleMinus(tutorName, e)}>-</button>
+						</form>
+					</article>);
+				}
+
 			}
 		}
 
