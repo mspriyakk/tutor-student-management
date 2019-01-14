@@ -9,8 +9,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 //console.log(schedule, skills, tutor);
-const curDay = 1; 
-const curHour = new Date().getHours();
+const today = new Date();
+const curDay = today.getDay(); 
+const curHour = today.getHours();
 const curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 
@@ -61,13 +62,13 @@ function tutorsBySkill(currentCourse) {
 function updateAllCourse(counter, tutor){
 	let count = 0;
 	for (let tutorSkill in counter[tutor]){
-		console.log(tutorSkill);
+		//console.log(tutorSkill);
 		if (tutorSkill !== "ALL COURSES"){
 			count += counter[tutor][tutorSkill];
 		}
 	}
 	counter[tutor]["ALL COURSES"] =  count;
-	console.log(counter[tutor]["ALL COURSES"]);
+	//console.log(counter[tutor]["ALL COURSES"]);
 	
 }
 class Page extends React.Component {
