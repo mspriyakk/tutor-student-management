@@ -43,7 +43,7 @@ function tutorsBySkill(currentCourse) {
 
 	let arryTutors = schedule[curDayName[curDay]][flag];
 	let arryTutorBySkill = [];
-	console.log(arryTutorBySkill);
+
 	if(arryTutors === undefined){
 		//lab hasn't opened to give tutors for the current time
 		return null;
@@ -58,6 +58,18 @@ function tutorsBySkill(currentCourse) {
 	}
 }
 
+function updateAllCourse(counter, tutor){
+	let count = 0;
+	for (let tutorSkill in counter[tutor]){
+		console.log(tutorSkill);
+		if (tutorSkill !== "ALL COURSES"){
+			count += counter[tutor][tutorSkill];
+		}
+	}
+	counter[tutor]["ALL COURSES"] =  count;
+	console.log(counter[tutor]["ALL COURSES"]);
+	
+}
 class Page extends React.Component {
 	constructor(props){
 		super(props);
@@ -86,7 +98,9 @@ class Page extends React.Component {
 		evt.preventDefault();
 		//console.log(this.state.activeLink,this.state.studentCounter);
 		const counter = this.state.studentCounter;
-		counter[tutor][this.state.activeLink] = evt.target.value;
+		counter[tutor][this.state.activeLink] = Number(evt.target.value);
+
+		updateAllCourse(counter, tutor);
 
 		this.setState({ studentCounter: counter });
 	}
@@ -95,6 +109,7 @@ class Page extends React.Component {
 		//console.log(this.state.activeLink,this.state.studentCounter);
 		const counter = this.state.studentCounter;
 		counter[tutor][this.state.activeLink] = counter[tutor][this.state.activeLink] + 1;
+		updateAllCourse(counter, tutor);
 
 		this.setState({ studentCounter: counter });
 	}
@@ -104,6 +119,7 @@ class Page extends React.Component {
 		const counter = this.state.studentCounter;
 		if (counter[tutor][this.state.activeLink] === 0) return;
 		counter[tutor][this.state.activeLink] = counter[tutor][this.state.activeLink] - 1;
+		updateAllCourse(counter, tutor);
 
 		this.setState({ studentCounter: counter });
 	}
@@ -133,20 +149,20 @@ class Page extends React.Component {
 				if(currentCourse === "ALL COURSES"){
 					tutorsSection.push(<article key={tutorName}>
 						<TutorsList name={tutorName} photo={photo} />
-						<SkillBoard name={tutorName} />
+						<SkillBoard name={tutorName} value={counter[tutorName]} />
 		            </article>);
 				}else{
-					tutorsSection.push(<article key={tutorName} >
-						<TutorsList name={tutorName} photo={photo} />
-						<SkillBoard name={tutorName} />
-						<form>
-							<input type="text"
-								value={counter[tutorName][currentCourse]}
-								onChange={(e) => this.handleChange(tutorName, e)} />
-							<button onClick={(e) => this.handleAdd(tutorName, e)}>+</button>
-							<button onClick={(e) => this.handleMinus(tutorName, e)}>-</button>
-						</form>
-					</article>);
+					tutorsSection.push(<article key={tutorName}>
+              <TutorsList name={tutorName} photo={photo} />
+              <SkillBoard name={tutorName} value={counter[tutorName]} />
+              <form>
+				<input type="text" 
+				value={counter[tutorName][currentCourse]} 
+				onChange={e => this.handleChange(tutorName, e)} />
+                <button onClick={e => this.handleAdd(tutorName, e)}>+</button>
+                <button onClick={e => this.handleMinus(tutorName, e)}>-</button>
+              </form>
+            </article>);
 				}
 
 			}
