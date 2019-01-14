@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/tutor-student-management/build/precache-manifest.0f557b589919b4996ec9cff53f968cf3.js"
+  "/tutor-student-management/precache-manifest.62ba780763a9c829bc1821a16ac4104b.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/tutor-student-management/build/index.html", {
+workbox.routing.registerNavigationRoute("/tutor-student-management/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
