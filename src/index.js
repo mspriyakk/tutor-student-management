@@ -1,6 +1,9 @@
 import schedule from "./schedule";
 import skills from "./skills";
 import tutor from "./tutor";
+import Courses from "./Courses";
+import TutorsList from "./TutorsList";
+import SkillBoard from "./SkillBoard";
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -10,42 +13,6 @@ const curDay = 1;
 const curHour = new Date().getHours();
 const curDayName = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-function Courses(props) {
-	let courseNames = Object.keys(skills);
-
-	const courses = courseNames.map((course) =>{
-		let courseCounter = 0;
-		for (let student in props.studentCounter) {
-			courseCounter += props.studentCounter[student][course];
-		}
-
-		return (<li key={course}><a name={course} onClick={() => props.onClick({ course })}>{course} ({courseCounter})</a></li>);
-	});	
-
-	
-	return (
-			<ul>			
-				{courses}
-			</ul>				
-		);
-}
-
-function SkillBoard(props) {
-	let tutorName = props.name;
-	const skillBoard =[];
-
-	for(let s in skills){
-		if(skills[s].toString().includes(tutorName)){
-			skillBoard.push(<p key={s}>{s}</p>);			
-		}
-	}
-
-	return (
-		<aside className="skill-board">
-		{skillBoard}
-		</aside>
-	);
-}
 
 function tutorsBySkill(currentCourse) {
 	//console.log(tutor, skills[currentCourse]);
@@ -90,15 +57,6 @@ function tutorsBySkill(currentCourse) {
 		return arryTutorBySkill;
 	}
 }
-
-function TutorsList(props) {
-	return (<p>
-		<img src={props.photo}
-			alt={props.name}
-			className="float-left" />
-		</p>);
-}
-
 
 class Page extends React.Component {
 	constructor(props){
