@@ -98,6 +98,7 @@ class Page extends React.Component {
 		evt.preventDefault();
 		//console.log(this.state.activeLink,this.state.studentCounter);
 		const counter = this.state.studentCounter;
+		if (isNaN(Number(evt.target.value)) )	return;
 		counter[tutor][this.state.activeLink] = Number(evt.target.value);
 
 		updateAllCourse(counter, tutor);
