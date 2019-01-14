@@ -57,7 +57,6 @@ function tutorsBySkill(currentCourse) {
 		scheduleTimeHashMap[scheduleTime[j]] = scheduleTime[j];
 	}
 
-
 	var flag;
 	if (curHour < 13) {
 		for (let item in scheduleTimeHashMap) {
@@ -77,13 +76,19 @@ function tutorsBySkill(currentCourse) {
 
 	let arryTutors = schedule[curDayName[curDay]][flag];
 	let arryTutorBySkill = [];
-
-	for (let k = 0; k < arryTutors.length; k++) {
-		if (skills[currentCourse].toString().includes(arryTutors[k])) {
-			arryTutorBySkill.push(arryTutors[k]);
+	console.log(arryTutorBySkill);
+	if(arryTutors === undefined){
+		//lab hasn't opened to give tutors for the current time
+		return null;
+	}else {
+		for (let k = 0; k < arryTutors.length; k++) {
+			if (skills[currentCourse].toString().includes(arryTutors[k])) {
+				arryTutorBySkill.push(arryTutors[k]);
+			}
 		}
+
+		return arryTutorBySkill;
 	}
-	return arryTutorBySkill;
 }
 
 function TutorsList(props) {
@@ -157,24 +162,29 @@ class Page extends React.Component {
 		let currentCourse = this.state.activeLink;
 		let counter = this.state.studentCounter;
 		let arryTutorBySkill = tutorsBySkill(currentCourse);
-		
 		const tutorsSection = [];
-		for (let k = 0; k < arryTutorBySkill.length; k++) {
-			let tutorName = arryTutorBySkill[k];
-			let photo = tutor[tutorName].photo;
 
-			tutorsSection.push( <article key = {tutorName} >
-				<TutorsList name={tutorName} photo={photo} />
-				<SkillBoard name={tutorName} /> 
-				<form>
-					<input type="text"
-						value={counter[tutorName][currentCourse]}
-						onChange={(e) => this.handleChange(tutorName, e)} />
-					<button onClick={(e) => this.handleAdd(tutorName, e)}>+</button>
-					<button onClick={(e) => this.handleMinus(tutorName, e)}>-</button>
-				</form>
+		
+		if(arryTutorBySkill ===  null) {
+			tutorsSection.push(<p key="noservice">Sorry, the lab is not open.</p>);
+		}else {
+			for (let k = 0; k < arryTutorBySkill.length; k++) {
+				let tutorName = arryTutorBySkill[k];
+				let photo = tutor[tutorName].photo;
+
+				tutorsSection.push( <article key = {tutorName} >
+					<TutorsList name={tutorName} photo={photo} />
+					<SkillBoard name={tutorName} /> 
+					<form>
+						<input type="text"
+							value={counter[tutorName][currentCourse]}
+							onChange={(e) => this.handleChange(tutorName, e)} />
+						<button onClick={(e) => this.handleAdd(tutorName, e)}>+</button>
+						<button onClick={(e) => this.handleMinus(tutorName, e)}>-</button>
+					</form>
 				</article>);
 			}
+		}
 
 		return (
 			<div className="flexbox">
